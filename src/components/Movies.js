@@ -8,7 +8,6 @@ import MoviesTable from './MoviesTable';
 import _ from 'lodash';
 
 export default class Movies extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -74,8 +73,6 @@ export default class Movies extends Component {
                 : allMovies;
 
         const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
-
-        console.log(sorted , sortColumn)
 
         const movies = paginate(sorted, currentPage, pageSize);
 
