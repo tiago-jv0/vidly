@@ -29,6 +29,23 @@ export default class Movies extends Component {
         });
     }
 
+    getPagedData = () => {
+
+        const { currentPage, pageSize, selectedGenre, sortColumn, movies: allMovies } = this.state;
+
+
+        const filtered =
+            selectedGenre && selectedGenre._id
+                ? allMovies.filter((movie) => movie.genre._id === selectedGenre._id)
+                : allMovies;
+
+        const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+
+        const movies = paginate(sorted, currentPage, pageSize);
+
+        return {totalCount : filtered.length, data : movies}
+    }
+
     handleDelete = (movieToDelete) => {
         this.setState({
             movies: this.state.movies.filter((movie) => movie._id !== movieToDelete._id),
@@ -63,18 +80,13 @@ export default class Movies extends Component {
     };
     render() {
         const { length: count } = this.state.movies;
-        const { currentPage, pageSize, selectedGenre, sortColumn, movies: allMovies } = this.state;
 
-        if (count === 0) return null;
+        const { currentPage, pageSize, sortColumn } = this.state;
 
-        const filtered =
-            selectedGenre && selectedGenre._id
-                ? allMovies.filter((movie) => movie.genre._id === selectedGenre._id)
-                : allMovies;
 
-        const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+        if (count === 0) return <p>There are no movies in </p>;
 
-        const movies = paginate(sorted, currentPage, pageSize);
+        const {totalCount , data: movies} = this.getPagedData()
 
         return (
             <div className="row">
@@ -87,7 +99,7 @@ export default class Movies extends Component {
                     ></ListGroup>
                 </div>
                 <div className="col">
-                    <p className="m-2">Showing {filtered.length} movies in the database</p>
+                    <p className="m-2">Showing {totalCount} movies in the database</p>
 
                     <MoviesTable
                         sortColumn={sortColumn}
@@ -98,7 +110,7 @@ export default class Movies extends Component {
                     ></MoviesTable>
 
                     <Pagination
-                        itemsCount={filtered.length}
+                        itemsCount={totalCount}
                         pageSize={pageSize}
                         currentPage={currentPage}
                         onPageChange={this.handlePageChange}

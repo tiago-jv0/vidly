@@ -2,10 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
-const Table = props => {
-
-    const {data , columns , sortColumn , onSort} = props;
-
+const Table = ({data , columns , sortColumn , onSort}) => {
     return (
         <div>
             <table className="table">
@@ -17,7 +14,10 @@ const Table = props => {
 }
 
 Table.propTypes = {
-
+    data : PropTypes.array.isRequired,
+    columns : PropTypes.array.isRequired,
+    sortColumn : PropTypes.object.isRequired,
+    onSort : PropTypes.func.isRequired
 }
 
 export default Table
